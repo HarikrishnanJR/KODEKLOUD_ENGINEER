@@ -160,3 +160,64 @@ Verify the ReplicaSet to ensure it has created the desired number of replicas:
 * kubectl get replicasets
 * kubectl get pods -l app=httpd_app
 
+
+6) Cronjob
+
+The Nautilus DevOps team is setting up recurring tasks on different schedules. Currently, they're developing scripts to be executed periodically. To kickstart the process, they're creating cron jobs in the Kubernetes cluster with placeholder commands. Follow the instructions below:
+Create a cronjob named xfusion.
+Set Its schedule to something like */2 * * * *. You can set any schedule for now.
+Name the container cron-xfusion.
+Utilize the httpd image with latest tag (specify as httpd:latest).
+Execute the dummy command echo Welcome to xfusioncorp!.
+Ensure the restart policy is OnFailure.
+
+
+
+ANS: 
+
+To create a cron job in Kubernetes with the specified details, you can use the following YAML configuration file.
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: xfusion
+spec:
+  schedule: "*/2 * * * *"  # Runs every 2 minutes
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cron-xfusion
+            image: httpd:latest
+            command: ["echo", "Welcome to xfusioncorp!"]
+          restartPolicy: OnFailure
+
+
+Explanation of Each Section
+
+apiVersion: Specifies the API version for CronJobs, which is batch/v1.
+kind: Declares this resource as a CronJob.
+metadata: Contains metadata for the CronJob, including:
+name: Set to xfusion.
+spec:
+schedule: Specifies the cron schedule in a cron format, */2 * * * *, which means the job will run every 2 minutes.
+jobTemplate: Defines the template for jobs created by this cron job:
+spec:
+containers: Configures the containers within the job. Here, it specifies:
+name: cron-xfusion
+image: httpd:latest, to use the latest version of the httpd image.
+command: Runs the command echo "Welcome to xfusioncorp!" as a placeholder task.
+restartPolicy: Set to OnFailure to restart the job only if it fails.
+
+
+Applying the Configuration
+1) Save this YAML configuration to a file, e.g., xfusion-cronjob.yaml.
+2) Use the following command to create the CronJob in your Kubernetes cluster:
+* kubectl apply -f xfusion-cronjob.yaml
+3) Verify the CronJob to ensure it’s scheduled correctly:
+* kubectl get cronjob
+4) Check the Job History (to see any jobs created by this CronJob):
+* kubectl get jobs
+
+This CronJob setup will run the specified command every 2 minutes using the httpd:latest image and restart the job on failure, as required.
