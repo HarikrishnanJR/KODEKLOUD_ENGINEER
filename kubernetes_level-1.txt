@@ -221,3 +221,66 @@ Applying the Configuration
 * kubectl get jobs
 
 This CronJob setup will run the specified command every 2 minutes using the httpd:latest image and restart the job on failure, as required.
+
+
+
+7) Kubernetes JOB
+
+
+The Nautilus DevOps team is crafting jobs in the Kubernetes cluster. While they're developing actual scripts/commands, they're currently setting up templates and testing jobs with dummy commands. Please create a job template as per details given below:
+
+
+Create a job named countdown-datacenter.
+
+The spec template should be named countdown-datacenter (under metadata), and the container should be named container-countdown-datacenter
+
+Utilize image fedora with latest tag (ensure to specify as fedora:latest), and set the restart policy to Never.
+
+Execute the command sleep 5
+
+
+ANS:
+
+YAML Configuration for countdown-datacenter Job
+
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: countdown-datacenter
+spec:
+  template:
+    metadata:
+      name: countdown-datacenter
+    spec:
+      containers:
+      - name: container-countdown-datacenter
+        image: fedora:latest
+        command: ["sleep", "5"]
+      restartPolicy: Never
+
+
+
+Explanation of Each Section
+apiVersion: Specifies the Kubernetes API version for Jobs, which is batch/v1.
+kind: Declares this resource as a Job.
+metadata: Contains metadata for the Job, including:
+name: Set to countdown-datacenter.
+spec:
+template:
+metadata:
+name: Named countdown-datacenter, as requested.
+spec:
+containers: Defines the container configuration:
+name: container-countdown-datacenter
+image: fedora:latest
+command: Runs sleep 5, which pauses the container for 5 seconds (this serves as a placeholder task).
+restartPolicy: Set to Never, which means the Job won’t restart on completion.
+
+
+Apply the Job configuration using:
+* kubectl apply -f countdown-datacenter-job.yaml
+Verify the Job to check if it completed successfully:
+* kubectl get jobs.
+
+
